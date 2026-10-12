@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ranking do Terror 𖦹˖°.🎃 ̟࿔*:⋆</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <h1 class="title">
+          <span class="clapper-icon-box" id="clapperIcon" title="Clique para bater o badalo!">
+            <svg class="clapper-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Clapperboard Base -->
+              <rect class="clapper-body" x="3" y="8.5" width="18" height="12" rx="2" fill="#181b22"/>
+              <!-- Clapper Arm (Badalo) -->
+              <g class="clapper-arm" id="clapperArm">
+                <rect x="3" y="4" width="18" height="4.5" rx="1.2" fill="#1e241c" stroke="#bfff7f" stroke-width="1.8"/>
+                <path d="M7 4L5.5 8.5M12 4L10.5 8.5M17 4L15.5 8.5" stroke="#bfff7f" stroke-width="1.6"/>
+              </g>
+              <circle cx="4.5" cy="8.5" r="1.2" fill="#bfff7f"/>
+            </svg>
+            <!-- High Quality Stars Container -->
+            <div class="stars-burst" id="starsBurst"></div>
+          </span>
+          <span class="title-text">Ranking do Terror 𖦹˖°.🎃 ̟࿔*:⋆</span>
+        </h1>
+        <p class="subtitle">Única lista válida no mundo :)</p>
+      </div>
+
+      <div class="header-actions">
+        <button id="saveRankingBtn" class="btn btn-primary" title="Salvar ranking permanentemente no banco de dados">
+          <svg class="icon-save" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          <span id="saveRankingText">Salvar Ranking</span>
+        </button>
+
+        <button id="resetAllBtn" class="btn btn-secondary" title="Devolver todas imagens para a reserva">
+          <svg class="icon-undo" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Desfazer Ranks
+        </button>
+
+        <button id="exportImageBtn" class="btn btn-success" title="Baixar a tier list como imagem PNG">
+          <svg class="icon-download" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Baixar Imagem
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Tier Board -->
+    <main class="board-wrapper">
+      <!-- Skull Watermark Background (Caveira.png) -->
+      <div class="board-skull-watermark" id="boardSkullWatermark" aria-hidden="true">
+        <img src="Caveira.png" alt="Caveira do Terror">
+      </div>
+
+      <div id="tierlistBoard" class="tierlist-board">
+        
+        <!-- Tier 1: Verde (Melhor) -->
+        <div class="tier-row" data-tier-id="puro-cinema">
+          <div class="tier-label" style="background-color: #bfff7f;" contenteditable="true" spellcheck="false" title="Clique para editar o nome">
+            <span>Puro Cinema</span>
+          </div>
+          <div class="tier-dropzone" data-zone-id="puro-cinema"></div>
+        </div>
+
+        <!-- Tier 2: Amarelo Claro -->
+        <div class="tier-row" data-tier-id="bom">
+          <div class="tier-label" style="background-color: #ffff7f;" contenteditable="true" spellcheck="false" title="Clique para editar o nome">
+            <span>Bom</span>
+          </div>
+          <div class="tier-dropzone" data-zone-id="bom"></div>
+        </div>
+
+        <!-- Tier 3: Amarelo Dourado -->
+        <div class="tier-row" data-tier-id="aceitavel">
+          <div class="tier-label" style="background-color: #ffdf7f;" contenteditable="true" spellcheck="false" title="Clique para editar o nome">
+            <span>Aceitável</span>
+          </div>
+          <div class="tier-dropzone" data-zone-id="aceitavel"></div>
+        </div>
+
+        <!-- Tier 4: Laranja Claro -->
+        <div class="tier-row" data-tier-id="podia-ser-melhor">
+          <div class="tier-label" style="background-color: #ffbf7f;" contenteditable="true" spellcheck="false" title="Clique para editar o nome">
+            <span>Podia ser Melhor</span>
+          </div>
+          <div class="tier-dropzone" data-zone-id="podia-ser-melhor"></div>
+        </div>
+
+        <!-- Tier 5: Vermelho / Coral (Pior) -->
+        <div class="tier-row" data-tier-id="isso-e-terror">
+          <div class="tier-label" style="background-color: #ff7f7f;" contenteditable="true" spellcheck="false" title="Clique para editar o nome">
+            <span>Isso é Terror?</span>
+          </div>
+          <div class="tier-dropzone" data-zone-id="isso-e-terror"></div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Image Pool / Bank -->
+    <section class="pool-section" id="poolSection">
+      <div class="pool-header">
+        <div class="pool-title">
+          <span>Imagens</span>
+          <span id="poolCounter" class="badge">0 itens</span>
+        </div>
+      </div>
+      
+      <div id="imagePool" class="tier-dropzone image-pool" data-zone-id="pool">
+        <div class="pool-placeholder" id="poolPlaceholder">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <p>Nenhuma imagem na reserva.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Purp Productions ® 2026</p>
+    </footer>
+  </div>
+
+  <!-- Fullscreen Image Lightbox Modal -->
+  <div id="imageModal" class="image-modal" aria-hidden="true">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-container">
+      <button id="modalCloseBtn" class="modal-close" title="Fechar (Esc)">&times;</button>
+      <div class="modal-image-wrapper">
+        <img id="modalImg" src="" alt="Visualização em tela cheia">
+      </div>
+      <div id="modalCaption" class="modal-caption"></div>
+    </div>
+  </div>
+
+  <!-- Confirm Reset Modal -->
+  <div id="confirmResetModal" class="confirm-modal" aria-hidden="true">
+    <div class="confirm-backdrop" id="confirmResetBackdrop"></div>
+    <div class="confirm-card">
+      <div class="confirm-card-glow"></div>
+      <div class="confirm-icon-wrap">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+      </div>
+      <h3 class="confirm-card-title">Desfazer Rankings?</h3>
+      <p class="confirm-card-text">Todas as imagens ranqueadas retornarão para a reserva. Tem certeza que deseja continuar?</p>
+      <div class="confirm-card-actions">
+        <button id="cancelResetBtn" class="confirm-btn confirm-btn-cancel">Cancelar</button>
+        <button id="proceedResetBtn" class="confirm-btn confirm-btn-danger">Sim, Desfazer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Smoke Canvas for reddish drag smoke trail -->
+  <canvas id="smokeCanvas" class="smoke-canvas"></canvas>
+
+  <canvas id="exportCanvas" style="display: none;"></canvas>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="ranking-data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

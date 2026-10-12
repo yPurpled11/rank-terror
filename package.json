@@ -1,0 +1,9 @@
+{
+  "name": "ranking-do-terror",
+  "version": "1.0.0",
+  "description": "Ranking do Terror - Tier List com persistência na nuvem",
+  "main": "index.html",
+  "dependencies": {
+    "@vercel/blob": "^0.23.4"
+  }
+}
