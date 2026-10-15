@@ -820,7 +820,18 @@ body.anims-disabled .app-container {
   box-shadow: 0 6px 20px rgba(239, 68, 68, 0.55);
 }
 
-/* Drop Indicator line (barra azul fixa e perfeitamente estável) */
+/* Drop Indicator line — animação suave de crescimento ao mudar de posição */
+@keyframes placeholderGrow {
+  from {
+    transform: scaleY(0.06);
+    opacity: 0.35;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
 .drop-placeholder {
   width: 4px;
   height: var(--item-size) !important;
@@ -834,6 +845,8 @@ body.anims-disabled .app-container {
   align-self: center;
   box-shadow: 0 0 10px rgba(99, 102, 241, 0.75);
   box-sizing: border-box;
+  transform-origin: center;
+  animation: placeholderGrow 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* Pool Section */
