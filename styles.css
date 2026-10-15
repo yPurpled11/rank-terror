@@ -498,7 +498,7 @@ body.anims-disabled .app-container {
   }
 
   .tier-label-intro {
-    animation: tierLabelIntro 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation: tierLabelIntro 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
   }
 
   .tier-dropzone-intro {
