@@ -96,7 +96,7 @@ export function animateTierRows() {
   window.addEventListener('keydown', handleSkipKey);
 
   const STAGGER      = 1000; // 1s entre o início de cada rank
-  const LABEL_DUR    = 1000; // 1s de deslize do label (centro → esquerda)
+  const LABEL_DUR    = 500; // 1s de deslize do label (centro → esquerda)
   const DROPZONE_DUR = 1000; // 1s de expansão da dropzone vazia (esquerda → direita)
 
   rows.forEach((row, i) => {
