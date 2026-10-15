@@ -233,9 +233,13 @@ function updateDropPlaceholder(zone, afterElement) {
         || document.querySelector('.drop-placeholder')
         || Object.assign(document.createElement('div'), { className: 'drop-placeholder' });
 
-  // Só reposiciona no DOM quando a posição realmente muda
+  // Só reposiciona no DOM quando a posição realmente muda; relança a animação
   if (ph.nextSibling !== afterElement || ph.parentElement !== zone) {
     afterElement == null ? zone.appendChild(ph) : zone.insertBefore(ph, afterElement);
+    // Força reinício da animação placeholderGrow
+    ph.style.animation = 'none';
+    ph.offsetHeight; // reflow intencional: sem isso o browser ignora o reset
+    ph.style.animation = '';
   }
 }
 
