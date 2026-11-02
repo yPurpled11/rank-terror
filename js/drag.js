@@ -17,6 +17,109 @@ export function injectOpenModal(fn) { _openModal = fn; }
 let _triggerSkull = () => {};
 export function injectTriggerSkull(fn) { _triggerSkull = fn; }
 
+// ── Auto-scroll durante drag nas bordas da página ──────────────────────────────
+const SCROLL_EDGE_PX = 95;
+const MIN_SCROLL_SPEED = 4;
+const MAX_SCROLL_SPEED = 22;
+
+let _autoScrollRafId = null;
+let _dragPointerX = null;
+let _dragPointerY = null;
+let _isAutoScrollActive = false;
+let _isTouchDraggingActive = false;
+let _touchUpdateCallback = null;
+
+function calculateScrollSpeed(y) {
+  if (y == null) return 0;
+  const vh = window.innerHeight;
+
+  if (y < SCROLL_EDGE_PX) {
+    const ratio = Math.min(1, Math.max(0, (SCROLL_EDGE_PX - y) / SCROLL_EDGE_PX));
+    return -Math.round(MIN_SCROLL_SPEED + ratio * (MAX_SCROLL_SPEED - MIN_SCROLL_SPEED));
+  }
+  if (y > vh - SCROLL_EDGE_PX) {
+    const ratio = Math.min(1, Math.max(0, (y - (vh - SCROLL_EDGE_PX)) / SCROLL_EDGE_PX));
+    return Math.round(MIN_SCROLL_SPEED + ratio * (MAX_SCROLL_SPEED - MIN_SCROLL_SPEED));
+  }
+  return 0;
+}
+
+function autoScrollStep() {
+  if (!_isAutoScrollActive) return;
+
+  const isAnyDragActive = isDraggingActive || _isTouchDraggingActive;
+  if (!isAnyDragActive) {
+    stopAutoScroll();
+    return;
+  }
+
+  if (_dragPointerY !== null) {
+    const speed = calculateScrollSpeed(_dragPointerY);
+    if (speed !== 0) {
+      const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+      const maxScrollY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+
+      if ((speed < 0 && scrollY > 0) || (speed > 0 && scrollY < maxScrollY)) {
+        window.scrollBy(0, speed);
+
+        // Atualiza a dropzone correspondente após o scroll
+        if (_isTouchDraggingActive && _touchUpdateCallback) {
+          _touchUpdateCallback();
+        } else if (isDraggingActive && _dragPointerX !== null && _dragPointerY !== null) {
+          updateHoverZoneOnScroll(_dragPointerX, _dragPointerY);
+        }
+      }
+    }
+  }
+
+  _autoScrollRafId = requestAnimationFrame(autoScrollStep);
+}
+
+function updateHoverZoneOnScroll(x, y) {
+  const el = document.elementFromPoint(x, y);
+  const zone = el?.closest?.('.tier-dropzone');
+  if (zone) {
+    if (currentActiveZone && currentActiveZone !== zone) {
+      currentActiveZone.classList.remove('drag-hover');
+      removePlaceholder(currentActiveZone);
+      resetDragHysteresis();
+    }
+    setCurrentActiveZone(zone);
+    zone.classList.add('drag-hover');
+    updateDropPlaceholder(zone, getDragAfterElement(zone, x, y));
+  } else if (currentActiveZone) {
+    currentActiveZone.classList.remove('drag-hover');
+    removePlaceholder(currentActiveZone);
+    setCurrentActiveZone(null);
+    resetDragHysteresis();
+  }
+}
+
+export function handleDragPointerMove(x, y) {
+  _dragPointerX = x;
+  _dragPointerY = y;
+  if (!_isAutoScrollActive && (isDraggingActive || _isTouchDraggingActive)) {
+    _isAutoScrollActive = true;
+    _autoScrollRafId = requestAnimationFrame(autoScrollStep);
+  }
+}
+
+export function stopAutoScroll() {
+  _isAutoScrollActive = false;
+  _dragPointerX = null;
+  _dragPointerY = null;
+  if (_autoScrollRafId) {
+    cancelAnimationFrame(_autoScrollRafId);
+    _autoScrollRafId = null;
+  }
+}
+
+// Interrompe scroll ao soltar mouse ou cancelar drag globalmente
+window.addEventListener('mouseup', stopAutoScroll);
+window.addEventListener('dragend', stopAutoScroll);
+window.addEventListener('drop', stopAutoScroll);
+window.addEventListener('blur', stopAutoScroll);
+
 // ── Mouse drag ───────────────────────────────────────────────────────────────
 
 export function setupItemDragEvents(item) {
@@ -27,14 +130,19 @@ export function setupItemDragEvents(item) {
     item.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', item.id);
+    handleDragPointerMove(e.clientX, e.clientY);
     setTimeout(() => { if (draggedItem) draggedItem.style.opacity = '0.35'; }, 0);
   });
 
   item.addEventListener('drag', e => {
-    if (e.clientX > 0 && e.clientY > 0) emitSmoke(e.clientX, e.clientY);
+    if (e.clientX > 0 && e.clientY > 0) {
+      emitSmoke(e.clientX, e.clientY);
+      handleDragPointerMove(e.clientX, e.clientY);
+    }
   });
 
   item.addEventListener('dragend', () => {
+    stopAutoScroll();
     if (draggedItem) {
       draggedItem.classList.remove('dragging');
       draggedItem.style.opacity = '1';
@@ -54,9 +162,12 @@ document.addEventListener('dragstart', e => {
   if (!e.target?.closest?.('.tier-item')) e.preventDefault();
 });
 
-// Fumaça contínua ao arrastar sobre o documento
+// Fumaça contínua e rastreio de auto-scroll ao arrastar sobre o documento
 document.addEventListener('dragover', e => {
-  if (isDraggingActive && e.clientX > 0 && e.clientY > 0) emitSmoke(e.clientX, e.clientY);
+  if (isDraggingActive) {
+    if (e.clientX > 0 && e.clientY > 0) emitSmoke(e.clientX, e.clientY);
+    handleDragPointerMove(e.clientX, e.clientY);
+  }
 });
 
 // ── Dropzone individual ──────────────────────────────────────────────────────
@@ -68,6 +179,7 @@ export function setupSingleDropzone(zone) {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
     if (e.clientX > 0 && e.clientY > 0) emitSmoke(e.clientX, e.clientY);
+    handleDragPointerMove(e.clientX, e.clientY);
 
     if (currentActiveZone && currentActiveZone !== zone) {
       currentActiveZone.classList.remove('drag-hover');
@@ -94,6 +206,7 @@ export function setupSingleDropzone(zone) {
 
   zone.addEventListener('drop', e => {
     e.preventDefault();
+    stopAutoScroll();
     zone.classList.remove('drag-hover');
     setCurrentActiveZone(null);
     resetDragHysteresis();
@@ -248,6 +361,7 @@ function removePlaceholder(zone) {
 }
 
 export function clearDropIndicators() {
+  stopAutoScroll();
   resetDragHysteresis();
   setCurrentActiveZone(null);
   document.querySelectorAll('.tier-dropzone').forEach(z => {
@@ -260,13 +374,15 @@ export function clearDropIndicators() {
 
 function enableTouchDrag(element) {
   let touchStartX = 0, touchStartY = 0, touchStartTime = 0;
+  let lastTouchX = 0, lastTouchY = 0;
   let currentTargetZone = null, ghostClone = null;
   let isDragging = false, hasMoved = false, longPressTimer = null;
 
   element.addEventListener('touchstart', e => {
     if (e.target.closest('.item-delete-btn')) return;
     const t = e.touches[0];
-    touchStartX = t.clientX; touchStartY = t.clientY;
+    touchStartX = lastTouchX = t.clientX;
+    touchStartY = lastTouchY = t.clientY;
     touchStartTime = Date.now();
     isDragging = hasMoved = false;
     currentTargetZone = null;
@@ -274,13 +390,21 @@ function enableTouchDrag(element) {
     clearTimeout(longPressTimer);
     longPressTimer = setTimeout(() => {
       isDragging = true;
+      _isTouchDraggingActive = true;
+      _touchUpdateCallback = () => {
+        const under = document.elementFromPoint(lastTouchX, lastTouchY);
+        currentTargetZone = under?.closest('.tier-dropzone') ?? null;
+      };
       element.classList.add('touch-drag-active');
       try { if (navigator.vibrate) navigator.vibrate(35); } catch {}
+      handleDragPointerMove(touchStartX, touchStartY);
     }, 220);
   }, { passive: true });
 
   element.addEventListener('touchmove', e => {
     const t  = e.touches[0];
+    lastTouchX = t.clientX;
+    lastTouchY = t.clientY;
     const dx = Math.abs(t.clientX - touchStartX);
     const dy = Math.abs(t.clientY - touchStartY);
     if (dx > 6 || dy > 6) hasMoved = true;
@@ -292,6 +416,7 @@ function enableTouchDrag(element) {
 
     if (e.cancelable) e.preventDefault();
     emitSmoke(t.clientX, t.clientY);
+    handleDragPointerMove(t.clientX, t.clientY);
 
     if (!ghostClone) {
       ghostClone = element.cloneNode(true);
@@ -311,6 +436,9 @@ function enableTouchDrag(element) {
 
   const finishTouch = e => {
     clearTimeout(longPressTimer);
+    _isTouchDraggingActive = false;
+    _touchUpdateCallback = null;
+    stopAutoScroll();
     element.classList.remove('touch-drag-active');
 
     if (ghostClone) {
