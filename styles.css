@@ -2380,44 +2380,68 @@ body.light-mode.purp-mode .title-skull-icon:hover {
   filter: drop-shadow(0 0 12px rgba(244, 63, 94, 0.85)) !important;
 }
 
-/* Animação que pisca 2 vezes */
-.title-skull-icon.blinking {
-  animation: skullBlinkTwice 0.85s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+/* Olhos da caveira — somente eles piscam */
+.title-skull-svg .skull-eye,
+.title-skull-svg circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 0.15s ease, transform 0.15s ease, filter 0.15s ease;
 }
 
-@keyframes skullBlinkTwice {
+.title-skull-svg .skull-eye-left {
+  transform-origin: 9px 12px;
+}
+
+.title-skull-svg .skull-eye-right {
+  transform-origin: 15px 12px;
+}
+
+/* Animação que pisca 2 vezes somente nos olhos (o corpo da caveira não pisca) */
+.title-skull-icon.blinking .skull-eye,
+.title-skull-icon.blinking .title-skull-svg circle {
+  animation: skullEyesBlinkTwice 0.85s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes skullEyesBlinkTwice {
   0% {
     opacity: 1;
     transform: scale(1);
-    filter: drop-shadow(0 0 0px rgba(239, 68, 68, 0));
+    filter: drop-shadow(0 0 0px currentColor);
   }
-  18% {
-    opacity: 0.08;
-    transform: scale(0.85);
-    filter: drop-shadow(0 0 0px rgba(239, 68, 68, 0));
+  16% {
+    opacity: 0;
+    transform: scaleY(0.08) scaleX(0.7);
+    filter: none;
   }
-  38% {
+  34% {
     opacity: 1;
-    transform: scale(1.22) rotate(4deg);
-    color: #ef4444;
-    filter: drop-shadow(0 0 14px rgba(239, 68, 68, 0.95)) drop-shadow(0 0 22px rgba(220, 38, 38, 0.8));
+    transform: scaleY(1.35) scaleX(1.2);
+    filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor);
   }
-  58% {
-    opacity: 0.08;
-    transform: scale(0.85);
-    filter: drop-shadow(0 0 0px rgba(239, 68, 68, 0));
+  48% {
+    opacity: 1;
+    transform: scale(1);
+    filter: drop-shadow(0 0 2px currentColor);
+  }
+  62% {
+    opacity: 0;
+    transform: scaleY(0.08) scaleX(0.7);
+    filter: none;
   }
   78% {
     opacity: 1;
-    transform: scale(1.25) rotate(-4deg);
-    color: #ff3333;
-    filter: drop-shadow(0 0 16px rgba(239, 68, 68, 1)) drop-shadow(0 0 26px rgba(220, 38, 38, 0.85));
+    transform: scaleY(1.35) scaleX(1.2);
+    filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 14px currentColor);
+  }
+  92% {
+    opacity: 1;
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 3px currentColor);
   }
   100% {
     opacity: 1;
-    transform: scale(1) rotate(0deg);
-    color: #f87171;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+    transform: scale(1);
+    filter: drop-shadow(0 0 0px currentColor);
   }
 }
 
