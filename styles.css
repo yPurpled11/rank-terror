@@ -2380,68 +2380,129 @@ body.light-mode.purp-mode .title-skull-icon:hover {
   filter: drop-shadow(0 0 12px rgba(244, 63, 94, 0.85)) !important;
 }
 
-/* Olhos da caveira — somente eles piscam */
-.title-skull-svg .skull-eye,
-.title-skull-svg circle {
+/* Olhos da caveira — mantêm rigorosamente a posição original (sem transform) */
+.title-skull-svg .skull-eye {
+  transition: opacity 0.12s ease, filter 0.15s ease;
+  pointer-events: none;
+}
+
+/* Pulsos avermelhados que emanam ao redor dos olhos */
+.skull-eye-pulse {
+  fill: rgba(239, 68, 68, 0.18);
+  stroke: rgba(239, 68, 68, 0.85);
+  stroke-width: 1px;
+  opacity: 0;
+  pointer-events: none;
   transform-box: fill-box;
   transform-origin: center;
-  transition: opacity 0.15s ease, transform 0.15s ease, filter 0.15s ease;
 }
 
-.title-skull-svg .skull-eye-left {
-  transform-origin: 9px 12px;
+body.light-mode .skull-eye-pulse {
+  fill: rgba(220, 38, 38, 0.2);
+  stroke: rgba(220, 38, 38, 0.9);
 }
 
-.title-skull-svg .skull-eye-right {
-  transform-origin: 15px 12px;
+body.purp-mode .skull-eye-pulse,
+body.light-mode.purp-mode .skull-eye-pulse {
+  fill: rgba(244, 63, 94, 0.2);
+  stroke: rgba(244, 63, 94, 0.9);
 }
 
-/* Animação que pisca 2 vezes somente nos olhos (o corpo da caveira não pisca) */
-.title-skull-icon.blinking .skull-eye,
-.title-skull-icon.blinking .title-skull-svg circle {
-  animation: skullEyesBlinkTwice 0.85s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+/* Animações ao piscar: olhos piscam em posição fixa e pulsos avermelhados saem ao redor */
+.title-skull-icon.blinking .skull-eye {
+  animation: skullEyesBlinkTwice 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.title-skull-icon.blinking .pulse-wave-1 {
+  animation: eyePulseWave1 0.85s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+.title-skull-icon.blinking .pulse-wave-2 {
+  animation: eyePulseWave2 0.85s cubic-bezier(0.2, 0.8, 0.3, 1);
 }
 
 @keyframes skullEyesBlinkTwice {
   0% {
     opacity: 1;
-    transform: scale(1);
-    filter: drop-shadow(0 0 0px currentColor);
+    filter: drop-shadow(0 0 0px transparent);
   }
-  16% {
+  14% {
     opacity: 0;
-    transform: scaleY(0.08) scaleX(0.7);
-    filter: none;
+    filter: drop-shadow(0 0 0px transparent);
   }
-  34% {
+  30% {
     opacity: 1;
-    transform: scaleY(1.35) scaleX(1.2);
-    filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor);
+    filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.95)) drop-shadow(0 0 6px rgba(220, 38, 38, 0.7));
   }
   48% {
     opacity: 1;
-    transform: scale(1);
-    filter: drop-shadow(0 0 2px currentColor);
+    filter: drop-shadow(0 0 1px rgba(239, 68, 68, 0.4));
   }
-  62% {
+  60% {
     opacity: 0;
-    transform: scaleY(0.08) scaleX(0.7);
-    filter: none;
+    filter: drop-shadow(0 0 0px transparent);
   }
-  78% {
+  76% {
     opacity: 1;
-    transform: scaleY(1.35) scaleX(1.2);
-    filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 14px currentColor);
+    filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.95)) drop-shadow(0 0 7px rgba(220, 38, 38, 0.75));
   }
   92% {
     opacity: 1;
-    transform: scale(1.05);
-    filter: drop-shadow(0 0 3px currentColor);
+    filter: drop-shadow(0 0 1px rgba(239, 68, 68, 0.3));
   }
   100% {
     opacity: 1;
-    transform: scale(1);
-    filter: drop-shadow(0 0 0px currentColor);
+    filter: drop-shadow(0 0 0px transparent);
+  }
+}
+
+@keyframes eyePulseWave1 {
+  0%, 12% {
+    opacity: 0;
+    transform: scale(0.9);
+    stroke-width: 1.2px;
+  }
+  16% {
+    opacity: 0.9;
+    transform: scale(1.1);
+    stroke-width: 1.1px;
+    filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.9));
+  }
+  36% {
+    opacity: 0;
+    transform: scale(3.5);
+    stroke-width: 0.2px;
+    filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0));
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9);
+    stroke-width: 0;
+  }
+}
+
+@keyframes eyePulseWave2 {
+  0%, 58% {
+    opacity: 0;
+    transform: scale(0.9);
+    stroke-width: 1.2px;
+  }
+  62% {
+    opacity: 0.9;
+    transform: scale(1.1);
+    stroke-width: 1.1px;
+    filter: drop-shadow(0 0 3px rgba(239, 68, 68, 0.9));
+  }
+  82% {
+    opacity: 0;
+    transform: scale(3.8);
+    stroke-width: 0.2px;
+    filter: drop-shadow(0 0 7px rgba(239, 68, 68, 0));
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9);
+    stroke-width: 0;
   }
 }
 
