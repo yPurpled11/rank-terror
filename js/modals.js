@@ -22,6 +22,13 @@ export function openModal(src, title) {
   modalImg.alt = clean || 'Imagem';
   modalImg.removeAttribute('title');
   modalCaption.textContent = clean || 'Imagem';
+
+  if ((clean && clean.toLowerCase().includes('miasma')) || (typeof src === 'string' && src.toLowerCase().includes('miasma'))) {
+    modalImg.classList.add('modal-miasma-aura');
+  } else {
+    modalImg.classList.remove('modal-miasma-aura');
+  }
+
   imageModal.classList.add('open');
   imageModal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden';
@@ -32,6 +39,7 @@ function closeModal() {
   imageModal.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = '';
   modalImg.src = '';
+  modalImg.classList.remove('modal-miasma-aura');
 }
 
 // ── Modal de confirmação de reset ────────────────────────────────────────────
