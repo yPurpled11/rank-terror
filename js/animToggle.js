@@ -25,6 +25,14 @@ function applyAnimState(btn, enabled) {
   } else {
     document.body.classList.add('anims-disabled');
     if (btn) btn.title = 'Ativar animações';
+    document.body.classList.remove('intro-animating');
+    const pool = document.getElementById('imagePool');
+    if (pool) pool.classList.remove('pool-awaiting-scroll');
+    document.querySelectorAll('.tier-item').forEach(item => {
+      item.classList.remove('pool-item-entering');
+      item.classList.add('pool-item-entered');
+      item.style.animationDelay = '';
+    });
   }
 }
 
