@@ -459,50 +459,14 @@ body.anims-disabled .app-container {
 
 /* ── Animação de entrada dos ranks (somente desktop ≥ 993px) ── */
 @media (min-width: 993px) {
-  /* Oculta ranks e imagens da reserva antes da animação sequencial começar */
-  body.intro-animating .tier-row {
-    opacity: 0;
-  }
-
-  body.intro-animating .tier-row.tier-row-visible {
-    opacity: 1;
-  }
-
-  body.intro-animating .image-pool .tier-item:not(.pool-item-entering):not(.pool-item-entered) {
+  /* Itens do ranking ocultos durante a introdução até sua vez de animar */
+  body.intro-animating .board-wrapper .tier-item:not(.pool-item-entering):not(.pool-item-entered) {
     opacity: 0 !important;
   }
 
-  @keyframes tierLabelIntro {
-    0% {
-      transform: translateX(var(--tier-center-offset));
-      opacity: 0;
-    }
-    15% {
-      opacity: 1;
-    }
-    100% {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes tierDropzoneIntro {
-    0% {
-      clip-path: inset(0 100% 0 0);
-      opacity: 0.3;
-    }
-    100% {
-      clip-path: inset(0 0% 0 0);
-      opacity: 1;
-    }
-  }
-
-  .tier-label-intro {
-    animation: tierLabelIntro 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-  }
-
-  .tier-dropzone-intro {
-    animation: tierDropzoneIntro 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  /* Imagens não rankeadas aguardam o scroll do usuário até a galeria para animar */
+  body:not(.anims-disabled) .image-pool.pool-awaiting-scroll .tier-item:not(.pool-item-entering):not(.pool-item-entered) {
+    opacity: 0 !important;
   }
 }
 
@@ -668,6 +632,72 @@ body.anims-disabled .app-container {
   60% { transform: scale(1.02) translate(-2px, -1px) rotate(-2.5deg); }
   80% { transform: scale(1.02) translate(2px, 1px) rotate(2.5deg); }
   100% { transform: scale(1.02) translate(0px, 0px) rotate(0deg); }
+}
+
+/* ── Aura Vermelha Permanente: Acampamento Miasma ── */
+@keyframes miasmaAuraPulse {
+  0%, 100% {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 12px 3px rgba(239, 68, 68, 0.85),
+                0 0 24px 6px rgba(220, 38, 38, 0.5),
+                inset 0 0 8px 1px rgba(255, 68, 68, 0.4) !important;
+  }
+  50% {
+    border-color: #ff3b3b !important;
+    box-shadow: 0 0 18px 5px rgba(255, 59, 59, 0.95),
+                0 0 34px 9px rgba(220, 38, 38, 0.7),
+                inset 0 0 10px 2px rgba(255, 80, 80, 0.55) !important;
+  }
+}
+
+body .tier-item.movie-miasma,
+body .tier-item[data-miasma="true"],
+body .tier-item[title*="Miasma" i],
+body .tier-item:has(img[src*="Miasma" i]) {
+  border: 2px solid #ef4444 !important;
+  box-shadow: 0 0 12px 3px rgba(239, 68, 68, 0.85),
+              0 0 24px 6px rgba(220, 38, 38, 0.5),
+              inset 0 0 8px 1px rgba(255, 68, 68, 0.4) !important;
+  animation: miasmaAuraPulse 2.4s ease-in-out infinite !important;
+  z-index: 5;
+}
+
+body .tier-item.movie-miasma:hover,
+body .tier-item[data-miasma="true"]:hover,
+body .tier-item[title*="Miasma" i]:hover,
+body .tier-item:has(img[src*="Miasma" i]):hover {
+  transform: translateY(-3px) scale(1.04);
+  border-color: #ff2222 !important;
+  box-shadow: 0 0 22px 7px rgba(255, 34, 34, 1),
+              0 0 40px 12px rgba(220, 38, 38, 0.8),
+              inset 0 0 12px 2px rgba(255, 100, 100, 0.65) !important;
+}
+
+/* Quando está entrando pela animação da introdução ou scroll */
+body .tier-item.movie-miasma.pool-item-entering,
+body .tier-item[data-miasma="true"].pool-item-entering,
+body .tier-item[title*="Miasma" i].pool-item-entering,
+body .tier-item:has(img[src*="Miasma" i]).pool-item-entering {
+  animation: poolItemReveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+}
+
+/* Quando está sendo arrastado */
+body .tier-item.movie-miasma.dragging,
+body .tier-item[data-miasma="true"].dragging,
+body .tier-item[title*="Miasma" i].dragging,
+body .tier-item:has(img[src*="Miasma" i]).dragging {
+  border: 2px solid #ff2222 !important;
+  box-shadow: 0 0 28px 10px rgba(239, 68, 68, 0.95),
+              0 0 50px 18px rgba(220, 38, 38, 0.7) !important;
+  animation: dragTremble 0.12s infinite linear !important;
+}
+
+/* Aura no modal de imagem (lightbox) */
+.modal-image-wrapper:has(#modalImg.modal-miasma-aura),
+.modal-image-wrapper:has(#modalImg[alt*="Miasma" i]) {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 35px 8px rgba(239, 68, 68, 0.75),
+              0 0 70px 18px rgba(220, 38, 38, 0.45) !important;
 }
 
 /* ========================================================
