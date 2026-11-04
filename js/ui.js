@@ -87,6 +87,15 @@ export function createTierItem(src, title = 'Imagem', container = imagePool, rel
     item.dataset.relPath = src;
   }
 
+  // O filme Acampamento Miasma deve ter uma aura vermelha sempre
+  const isMiasma = (cleanTitle && cleanTitle.toLowerCase().includes('miasma')) ||
+    (typeof relPath === 'string' && relPath.toLowerCase().includes('miasma')) ||
+    (typeof src === 'string' && src.toLowerCase().includes('miasma'));
+  if (isMiasma) {
+    item.classList.add('movie-miasma');
+    item.dataset.miasma = 'true';
+  }
+
   const img = document.createElement('img');
   img.src = src;
   img.alt = cleanTitle;
