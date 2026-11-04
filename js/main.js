@@ -11,7 +11,7 @@ import { setupTitleSkull, setupClapperboard, triggerSkullAnimation } from './eff
 import { setupCustomScrollbar } from './scrollbar.js';
 import { loadRankingData, saveRankingToDatabase } from './data.js';
 import { exportTierList } from './export.js';
-import { animateTierRows } from './animations.js';
+import { animateBoardIntro, animateTierRows, setupPoolScrollObserver } from './animations.js';
 import { waitForImages } from './utils.js';
 import { setupAnimToggle, areAnimsEnabled } from './animToggle.js';
 
@@ -85,12 +85,18 @@ async function startApp() {
   // 2. Aguarda a transição de revelação (450ms) e inicia as animações (se ativadas)
   setTimeout(() => {
     if (areAnimsEnabled()) {
-      animateTierRows();
+      animateBoardIntro();
+      setupPoolScrollObserver();
     } else {
       // Sem animação: remove estado de intro imediatamente
       document.body.classList.remove('intro-animating');
+      const pool = document.getElementById('imagePool');
+      if (pool) pool.classList.remove('pool-awaiting-scroll');
       document.querySelectorAll('.board-wrapper .tier-row').forEach(row => {
         row.classList.add('tier-row-visible');
+      });
+      document.querySelectorAll('.tier-item').forEach(item => {
+        item.classList.add('pool-item-entered');
       });
     }
   }, 450);
